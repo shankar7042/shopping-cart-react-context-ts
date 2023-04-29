@@ -4,7 +4,7 @@ export const useLocalstorage = <T>(
   key: string,
   initialValue: T | (() => T)
 ) => {
-  const [data, setData] = useState(() => {
+  const [data, setData] = useState<T>(() => {
     let jsonData = localStorage.getItem(key);
     if (jsonData !== null) return JSON.parse(jsonData);
     if (typeof initialValue == "function") {
