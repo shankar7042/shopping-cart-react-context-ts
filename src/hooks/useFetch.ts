@@ -13,8 +13,6 @@ export const useFetch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [url, setUrl] = useState("https://dummyjson.com/products");
 
-  console.log(data);
-
   useEffect(() => {
     async function fetchData() {
       try {

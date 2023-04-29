@@ -1,10 +1,25 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useLocalstorage } from "../hooks/useLocalstorage";
+import { useFetch } from "../hooks/useFetch";
 
 type CartItemData = {
   id: number;
   qty: number;
 };
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  brand: string;
+  category: string;
+  thumbnail: string;
+  images?: string[] | null;
+}
 
 type CartContextType = {
   cartItems: CartItemData[];
@@ -12,6 +27,7 @@ type CartContextType = {
   increaseItemQuantity: (id: number) => void;
   decreaseItemQuantity: (id: number) => void;
   removeItem: (id: number) => void;
+  getCartItemsProduct: () => Product[];
 };
 
 const CartContext = createContext({} as CartContextType);
@@ -68,6 +84,15 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     });
   }
 
+  function getCartItemsProduct(): Product[] {
+    const [{ data }] = useFetch();
+    const ids = cartItems.map((item) => item.id);
+    const idsSet = new Set(ids);
+    return data?.products?.filter((prod: { id: number }) =>
+      idsSet.has(prod.id)
+    );
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -76,6 +101,7 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
         increaseItemQuantity,
         decreaseItemQuantity,
         removeItem,
+        getCartItemsProduct,
       }}
     >
       {children}
